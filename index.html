@@ -154,9 +154,19 @@
     </section>
 
     <!-- =========================================================
-         STAGE 2: ONLY THE 3D PAPER BOOK (NO TOP RECTANGLE, NO BOTTOM BAR)
+         STAGE 2: 3D PAPER BOOK WITH 2 LAYOUT OPTIONS (SINGLE PAGE / WHOLE BOOK)
          ========================================================= -->
     <section class="book-experience hidden" id="bookExperience" aria-label="Interactive Birthday Book">
+
+      <!-- View Mode Switcher (Option 1: Single Page Layout | Option 2: Whole Book Spread Layout) -->
+      <div class="view-mode-switcher" id="viewModeSwitcher" role="group" aria-label="Book Layout Options">
+        <button class="retro-btn mode-option-btn" id="modeSingleBtn" type="button">
+          <span>SINGLE PAGE</span>
+        </button>
+        <button class="retro-btn mode-option-btn active" id="modeSpreadBtn" type="button">
+          <span>WHOLE BOOK</span>
+        </button>
+      </div>
 
       <!-- The Physical Desk / Paper Book Landing Zone -->
       <div class="book-desk" id="bookDesk">

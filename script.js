@@ -10,10 +10,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const bookExperience = document.getElementById('bookExperience');
   const bookDesk = document.getElementById('bookDesk');
-  const restartBookBtn = document.getElementById('restartBookBtn');
-  const celebrateBtn = document.getElementById('celebrateBtn');
-  const wishResponse = document.getElementById('wishResponse');
-
+  const bookViewport = document.getElementById('bookViewport');
+  const modeSingleBtn = document.getElementById('modeSingleBtn');
+  const modeSpreadBtn = document.getElementById('modeSpreadBtn');
   const bgDecorations = document.getElementById('bgDecorations');
   const confettiContainer = document.getElementById('confettiContainer');
 
@@ -419,12 +418,113 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ---------------------------------------------------------------------------
-  // 4. Realistic Diagonal Paper Curl & Roll Engine (StPageFlip + Swipe-Only Guard)
+  // 4. Realistic Diagonal Paper Curl & Roll Engine + 2 Layout Options:
+  //    Option 1 ("single"): Single Page Layout (like images 1 & 2)
+  //    Option 2 ("spread"): Whole Book 2-Page Spread Layout (like image 3)
   // ---------------------------------------------------------------------------
   const flipbookRoot = document.getElementById('flipbookRoot');
+  // Snapshot the original 24 book pages HTML so we can switch between Single Page & Whole Book cleanly
+  const originalPagesMarkup = flipbookRoot.innerHTML;
+
   let pageFlipInstance = null;
   let isDraggingPaper = false;
   let pointerDownPos = null;
+  // Default to Single Page on narrow mobile portrait screens, or Whole Book on wider screens
+  let currentLayoutMode = window.innerWidth <= 680 ? 'single' : 'spread';
+
+  function updateModeButtonsUI() {
+    if (currentLayoutMode === 'single') {
+      modeSingleBtn.classList.add('active');
+      modeSpreadBtn.classList.remove('active');
+      bookViewport.classList.add('single-page-mode');
+      bookViewport.classList.remove('whole-book-mode');
+    } else {
+      modeSpreadBtn.classList.add('active');
+      modeSingleBtn.classList.remove('active');
+      bookViewport.classList.add('whole-book-mode');
+      bookViewport.classList.remove('single-page-mode');
+    }
+    updateBookResponsiveScale();
+  }
+
+  function updateBookResponsiveScale() {
+    const availW = window.innerWidth - 20;
+    const availH = window.innerHeight - 75;
+    const targetW = currentLayoutMode === 'single' ? 370 : 740;
+    const targetH = 470;
+    const scale = Math.min(1, availW / targetW, availH / targetH);
+    bookViewport.style.setProperty('--book-scale', scale.toFixed(3));
+  }
+
+  function attachBookInnerButtonListeners() {
+    const restartBtn = flipbookRoot.querySelector('#restartBookBtn');
+    const celebBtn = flipbookRoot.querySelector('#celebrateBtn');
+    const wishResp = flipbookRoot.querySelector('#wishResponse');
+
+    if (restartBtn) {
+      restartBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        playSound('pageFlip');
+        if (pageFlipInstance) {
+          pageFlipInstance.flip(0);
+        }
+      });
+    }
+
+    if (celebBtn) {
+      celebBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        playSound('celebrate');
+        launchConfetti(60);
+        if (wishResp) wishResp.classList.remove('hidden');
+      });
+    }
+  }
+
+  function attachInlineButterflies() {
+    inlineButterflyStates.length = 0;
+    const inlineSlots = flipbookRoot.querySelectorAll('.inline-butterfly-slot, .btn-butterfly-icon');
+    inlineSlots.forEach((slot, idx) => {
+      const variant = slot.dataset.color || (idx % 2 === 0 ? 'pink' : 'purple');
+      const uniqueFlapDur = 0.28 + Math.random() * 0.34;
+      const uniqueFlapDelay = Math.random() * 1.5;
+      slot.innerHTML = createPixelButterflySVG(variant, 25, uniqueFlapDur, uniqueFlapDelay);
+
+      const state = {
+        el: slot,
+        wingWrap: slot.querySelector('.butterfly-wing-wrap'),
+        baseFlap: uniqueFlapDur,
+        phaseA: Math.random() * Math.PI * 2,
+        phaseB: Math.random() * Math.PI * 2,
+        speedA: 1.1 + Math.random() * 1.4,
+        speedB: 1.6 + Math.random() * 1.8,
+        fleeX: 0,
+        fleeY: 0,
+        fleeRot: 0
+      };
+      inlineButterflyStates.push(state);
+
+      const flutterAwayInline = (e) => {
+        e.stopPropagation();
+        state.fleeX = (Math.random() > 0.5 ? 1 : -1) * (22 + Math.random() * 28);
+        state.fleeY = -(16 + Math.random() * 24);
+        state.fleeRot = (Math.random() - 0.5) * 45;
+        if (state.wingWrap) state.wingWrap.style.animationDuration = '0.13s';
+        playTone(740 + Math.random() * 240, 'sine', 0.06, 0, 0.03);
+
+        clearTimeout(slot._returnTimer);
+        slot._returnTimer = setTimeout(() => {
+          state.fleeX = 0;
+          state.fleeY = 0;
+          state.fleeRot = 0;
+          if (state.wingWrap) state.wingWrap.style.animationDuration = `${state.baseFlap.toFixed(3)}s`;
+        }, 1100 + Math.random() * 500);
+      };
+
+      slot.addEventListener('pointerenter', flutterAwayInline);
+      slot.addEventListener('pointerdown', flutterAwayInline);
+    });
+  }
 
   flipbookRoot.addEventListener('pointerdown', (e) => {
     if (e.target.closest('button')) return;
@@ -453,25 +553,35 @@ document.addEventListener('DOMContentLoaded', () => {
     isDraggingPaper = false;
   }, true);
 
-  function initOrUpdatePageFlip() {
-    if (pageFlipInstance) {
-      pageFlipInstance.update();
-      return;
-    }
-
+  function initOrUpdatePageFlip(preservePageIdx = 0) {
     if (typeof St === 'undefined' || !St.PageFlip) {
       console.error('StPageFlip library not loaded');
       return;
     }
 
+    if (pageFlipInstance) {
+      try {
+        pageFlipInstance.destroy();
+      } catch (_) {}
+      pageFlipInstance = null;
+    }
+
+    // Restore clean HTML pages into flipbookRoot
+    flipbookRoot.innerHTML = originalPagesMarkup;
+    updateModeButtonsUI();
+
+    const isSingle = currentLayoutMode === 'single';
+
     pageFlipInstance = new St.PageFlip(flipbookRoot, {
       width: 370,
       height: 470,
       size: 'fixed',
-      minWidth: 320,
-      maxWidth: 420,
-      minHeight: 420,
-      maxHeight: 520,
+      // In "single" mode: force portrait threshold huge so it's ALWAYS 1 page.
+      // In "spread" (Whole Book) mode: disable portrait so it's ALWAYS a 2-page open book spread!
+      minWidth: isSingle ? 2000 : 200,
+      maxWidth: 2500,
+      minHeight: 300,
+      maxHeight: 1500,
       maxShadowOpacity: 0.65,
       showCover: true,
       mobileScrollSupport: false,
@@ -479,25 +589,36 @@ document.addEventListener('DOMContentLoaded', () => {
       swipeDistance: 25,
       clickEventForward: true,
       flippingTime: 780,
-      usePortrait: true,
+      usePortrait: isSingle,
+      startPage: preservePageIdx,
       startZIndex: 10,
       autoSize: true,
       drawShadow: true
     });
 
-    pageFlipInstance.loadFromHTML(document.querySelectorAll('.book-page'));
+    pageFlipInstance.loadFromHTML(flipbookRoot.querySelectorAll('.book-page'));
+    attachInlineButterflies();
+    attachBookInnerButtonListeners();
 
     pageFlipInstance.on('flip', () => {
       playSound('pageFlip');
     });
   }
 
-  restartBookBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
+  modeSingleBtn.addEventListener('click', () => {
+    if (currentLayoutMode === 'single') return;
+    const curPage = pageFlipInstance ? pageFlipInstance.getCurrentPageIndex() : 0;
+    currentLayoutMode = 'single';
     playSound('pageFlip');
-    if (pageFlipInstance) {
-      pageFlipInstance.flip(0);
-    }
+    initOrUpdatePageFlip(curPage);
+  });
+
+  modeSpreadBtn.addEventListener('click', () => {
+    if (currentLayoutMode === 'spread') return;
+    const curPage = pageFlipInstance ? pageFlipInstance.getCurrentPageIndex() : 0;
+    currentLayoutMode = 'spread';
+    playSound('pageFlip');
+    initOrUpdatePageFlip(curPage);
   });
 
   // Keyboard navigation (Left/Right arrows for Windows users)
@@ -511,9 +632,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   window.addEventListener('resize', () => {
-    if (pageFlipInstance && !bookExperience.classList.contains('hidden')) {
-      pageFlipInstance.update();
-    }
+    updateBookResponsiveScale();
   });
 
   // ---------------------------------------------------------------------------
@@ -536,11 +655,4 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 3400);
     }
   }
-
-  celebrateBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    playSound('celebrate');
-    launchConfetti(60);
-    wishResponse.classList.remove('hidden');
-  });
 });

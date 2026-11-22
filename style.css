@@ -591,7 +591,7 @@ html, body {
 }
 
 /* ==========================================================================
-   STAGE 2: ONLY THE 3D PAPER BOOK (NO TOP HUD, NO BOTTOM CONTROLS)
+   STAGE 2: 3D PAPER BOOK WITH 2 LAYOUT OPTIONS (SINGLE PAGE vs WHOLE BOOK)
    ========================================================================== */
 .hidden {
   display: none !important;
@@ -601,8 +601,41 @@ html, body {
   width: 100%;
   height: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  position: relative;
+}
+
+/* View Mode Option Switcher Pill (Top-Center) */
+.view-mode-switcher {
+  position: fixed;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 80;
+  display: inline-flex;
+  gap: 8px;
+  background: rgba(232, 199, 255, 0.9);
+  padding: 5px;
+  border-top: 2px solid var(--bevel-light);
+  border-left: 2px solid var(--bevel-light);
+  border-right: 2px solid var(--bevel-dark);
+  border-bottom: 2px solid var(--bevel-dark);
+  box-shadow: 4px 4px 0px rgba(72, 12, 168, 0.25);
+}
+
+.mode-option-btn {
+  padding: 6px 14px;
+  font-size: 11px;
+  background: #e9c7ff;
+  color: var(--ink-deep);
+}
+
+.mode-option-btn.active {
+  background: #ff47b5;
+  color: #ffffff;
+  text-shadow: 1px 1px 0px #3f086b;
 }
 
 /* Physical Desk Landing Area */
@@ -629,18 +662,18 @@ html, body {
 @keyframes bookLandOnDesk {
   0% {
     opacity: 0;
-    transform: translateY(-160px) scale(0.55) rotateX(40deg) rotateZ(-6deg);
+    transform: translateY(-160px) scale(calc(var(--book-scale, 1) * 0.55)) rotateX(40deg) rotateZ(-6deg);
   }
   65% {
     opacity: 1;
-    transform: translateY(10px) scale(1.03) rotateX(8deg) rotateZ(0deg);
+    transform: translateY(10px) scale(calc(var(--book-scale, 1) * 1.03)) rotateX(8deg) rotateZ(0deg);
   }
   82% {
-    transform: translateY(-4px) scale(0.99) rotateX(12deg);
+    transform: translateY(-4px) scale(calc(var(--book-scale, 1) * 0.99)) rotateX(12deg);
   }
   100% {
     opacity: 1;
-    transform: translateY(0px) scale(1) rotateX(10deg);
+    transform: translateY(0px) scale(var(--book-scale, 1)) rotateX(0deg);
   }
 }
 
@@ -673,7 +706,7 @@ html, body {
   pointer-events: none;
 }
 
-/* 3D Book Viewport */
+/* 3D Book Viewport (supports --book-scale so Whole Book fits even on a vertical phone screen!) */
 .book-viewport {
   position: relative;
   width: 740px;
@@ -681,6 +714,38 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
+  --book-scale: 1;
+  transform: scale(var(--book-scale, 1));
+  transform-origin: center center;
+  transition: width 0.3s ease, height 0.3s ease, transform 0.3s ease;
+}
+
+.book-viewport.single-page-mode {
+  width: 370px;
+  height: 470px;
+}
+
+.book-viewport.single-page-mode .book-spine {
+  display: none;
+}
+
+.book-viewport.single-page-mode .flipbook-root {
+  width: 370px;
+  height: 470px;
+}
+
+.book-viewport.whole-book-mode {
+  width: 740px;
+  height: 470px;
+}
+
+.book-viewport.whole-book-mode .book-spine {
+  display: block;
+}
+
+.book-viewport.whole-book-mode .flipbook-root {
+  width: 740px;
+  height: 470px;
 }
 
 /* Center Book Spine */
@@ -1427,64 +1492,11 @@ html, body {
 }
 
 /* ==========================================================================
-   MOBILE & PORTRAIT MODE (Single-Page / Compact Swipe Optimization)
+   MOBILE & PORTRAIT MODE
    ========================================================================== */
 @media (max-width: 780px) {
-  .desktop-icons {
-    top: 8px;
-    left: 8px;
-    flex-direction: row;
-    gap: 8px;
-  }
-
-  .desktop-icon {
-    width: 60px;
-    padding: 2px;
-  }
-
-  .desktop-icon svg {
-    width: 30px;
-    height: 30px;
-  }
-
-  .icon-label {
-    font-size: 9px;
-  }
-
-  .sys-msg-window {
-    display: none;
-  }
-
   .stage-container {
-    padding: 56px 10px 10px;
-  }
-
-  .dialog-top-grid {
-    grid-template-columns: 1fr;
-    text-align: center;
-  }
-
-  .speech-box {
-    display: none;
-  }
-
-  .captcha-row {
-    margin: 4px auto;
-  }
-
-  /* On Mobile, focus the viewport onto a single page with full diagonal corner curl & roll */
-  .book-viewport {
-    width: 350px;
-    height: 460px;
-  }
-
-  .flipbook-root {
-    width: 350px;
-    height: 460px;
-  }
-
-  .book-spine {
-    display: none;
+    padding: 54px 8px 10px;
   }
 
   .cover-title {
