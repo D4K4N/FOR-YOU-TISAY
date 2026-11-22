@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Happy Birthday, Duday Tisay! // From Kuya Ram</title>
+  <!-- Retro Pixel Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+  <!-- StPageFlip: True Geometric Diagonal Paper Roll, Cylinder Curl & Text Reflection Engine -->
+  <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Subtle Scanline & CRT Overlay -->
+  <div class="crt-overlay" id="crtOverlay"></div>
+
+  <!-- Floating Pixel Sparkles Background -->
+  <div class="bg-decorations" id="bgDecorations"></div>
+
+  <main class="stage-container">
+
+    <!-- =========================================================
+         STAGE 1: REALISTIC PIXELATED ENVELOPE WITH ENGLISH GREETINGS ONLY
+         ========================================================= -->
+    <section class="intro-envelope-scene" id="introDialog" aria-label="Birthday Envelope">
+
+      <!-- Pixelated English Greeting Header -->
+      <div class="envelope-greetings">
+        <h1 class="main-greeting-title">Happy Birthday,<br/>Duday Tisay!</h1>
+        <p class="from-kuya-badge">From your Kuya Ram</p>
+      </div>
+
+      <!-- Realistic Pixelated 3D Envelope -->
+      <div class="envelope-stage" id="envelopeStage">
+        <div class="envelope-wrapper" id="envelopeWrapper" role="button" tabindex="0" aria-label="Open birthday envelope">
+          <div class="envelope-shadow"></div>
+
+          <div class="pixel-envelope">
+            <!-- Pixelated Back Board of Envelope -->
+            <div class="env-back-pixel"></div>
+
+            <!-- Rising Pixel Paper Book Preview inside Envelope -->
+            <div class="env-letter-preview" id="envLetterPreview">
+              <div class="preview-header">TO: DUDAY TISAY</div>
+              <div class="preview-sub">HAPPY BIRTHDAY!</div>
+              <div class="preview-lines">
+                <span></span><span></span><span></span>
+              </div>
+              <div class="preview-from">FROM: KUYA RAM</div>
+            </div>
+
+            <!-- Realistic Pixelated Envelope Front Pocket (SVG Crisp Pixel Art with Shaded Seams & Postage Stamp) -->
+            <div class="env-pocket-pixel">
+              <svg viewBox="0 0 180 116" width="100%" height="100%" preserveAspectRatio="none" shape-rendering="crispEdges">
+                <!-- Left Triangle Flap of Pocket -->
+                <polygon points="0,0 94,62 0,116" fill="#dfb0ff" />
+                <!-- Right Triangle Flap of Pocket -->
+                <polygon points="180,0 86,62 180,116" fill="#d396ff" />
+                <!-- Pixel Staircase Shadow Diagonal Seam Left -->
+                <rect x="6" y="6" width="8" height="3" fill="#b46be8"/>
+                <rect x="14" y="11" width="8" height="3" fill="#b46be8"/>
+                <rect x="22" y="16" width="8" height="3" fill="#b46be8"/>
+                <rect x="30" y="21" width="8" height="3" fill="#b46be8"/>
+                <rect x="38" y="26" width="8" height="3" fill="#b46be8"/>
+                <rect x="46" y="31" width="8" height="3" fill="#b46be8"/>
+                <rect x="54" y="36" width="8" height="3" fill="#b46be8"/>
+                <rect x="62" y="41" width="8" height="3" fill="#b46be8"/>
+                <!-- Pixel Staircase Shadow Diagonal Seam Right -->
+                <rect x="166" y="6" width="8" height="3" fill="#a85cde"/>
+                <rect x="158" y="11" width="8" height="3" fill="#a85cde"/>
+                <rect x="150" y="16" width="8" height="3" fill="#a85cde"/>
+                <rect x="142" y="21" width="8" height="3" fill="#a85cde"/>
+                <rect x="134" y="26" width="8" height="3" fill="#a85cde"/>
+                <rect x="126" y="31" width="8" height="3" fill="#a85cde"/>
+                <rect x="118" y="36" width="8" height="3" fill="#a85cde"/>
+                <rect x="110" y="41" width="8" height="3" fill="#a85cde"/>
+                <!-- Bottom Trapezoid Pocket Flap -->
+                <polygon points="0,116 68,52 112,52 180,116" fill="#ecc9ff" />
+                <!-- Pixel Highlight Along Bottom Fold Crease -->
+                <rect x="68" y="51" width="44" height="3" fill="#ffffff"/>
+                <rect x="58" y="57" width="12" height="3" fill="#f8e8ff"/>
+                <rect x="110" y="57" width="12" height="3" fill="#f8e8ff"/>
+                <rect x="46" y="65" width="12" height="3" fill="#f8e8ff"/>
+                <rect x="122" y="65" width="12" height="3" fill="#f8e8ff"/>
+                <rect x="34" y="73" width="12" height="3" fill="#f8e8ff"/>
+                <rect x="134" y="73" width="12" height="3" fill="#f8e8ff"/>
+                <rect x="22" y="81" width="12" height="3" fill="#f8e8ff"/>
+                <rect x="146" y="81" width="12" height="3" fill="#f8e8ff"/>
+                <!-- Outer Pixel Border Frame -->
+                <rect x="0" y="0" width="180" height="3" fill="#3f086b"/>
+                <rect x="0" y="113" width="180" height="3" fill="#3f086b"/>
+                <rect x="0" y="0" width="3" height="116" fill="#3f086b"/>
+                <rect x="177" y="0" width="3" height="116" fill="#3f086b"/>
+              </svg>
+
+              <!-- Realistic Pixelated Address & Postage Label on Envelope Front -->
+              <div class="envelope-label-card">
+                <span class="label-to">To: Duday Tisay</span>
+                <span class="label-from">From: Kuya Ram</span>
+              </div>
+            </div>
+
+            <!-- Realistic Pixelated Top Flap (Opens in 3D) -->
+            <div class="env-flap-pixel" id="envFlap">
+              <svg viewBox="0 0 180 72" width="100%" height="100%" preserveAspectRatio="none" shape-rendering="crispEdges">
+                <polygon points="0,0 180,0 90,68" fill="#f5c6ff" />
+                <!-- Pixelated Step Borders on Top Flap -->
+                <rect x="0" y="0" width="180" height="3" fill="#3f086b"/>
+                <rect x="4" y="3" width="172" height="2" fill="#ffffff"/>
+                <rect x="8" y="8" width="12" height="4" fill="#8839bf"/>
+                <rect x="160" y="8" width="12" height="4" fill="#8839bf"/>
+                <rect x="20" y="16" width="12" height="4" fill="#8839bf"/>
+                <rect x="148" y="16" width="12" height="4" fill="#8839bf"/>
+                <rect x="32" y="24" width="12" height="4" fill="#8839bf"/>
+                <rect x="136" y="24" width="12" height="4" fill="#8839bf"/>
+                <rect x="44" y="32" width="12" height="4" fill="#8839bf"/>
+                <rect x="124" y="32" width="12" height="4" fill="#8839bf"/>
+                <rect x="56" y="40" width="12" height="4" fill="#8839bf"/>
+                <rect x="112" y="40" width="12" height="4" fill="#8839bf"/>
+                <rect x="68" y="48" width="12" height="4" fill="#8839bf"/>
+                <rect x="100" y="48" width="12" height="4" fill="#8839bf"/>
+                <rect x="78" y="56" width="24" height="5" fill="#3f086b"/>
+              </svg>
+            </div>
+
+            <!-- Pixelated Wax Seal with Embossed Pixel Heart -->
+            <div class="wax-seal" id="waxSeal">
+              <svg viewBox="0 0 20 20" width="28" height="28" shape-rendering="crispEdges">
+                <!-- Outer Wax Rim -->
+                <rect x="4" y="1" width="12" height="18" fill="#4a062d"/>
+                <rect x="1" y="4" width="18" height="12" fill="#4a062d"/>
+                <rect x="2" y="2" width="16" height="16" fill="#7a0c4b"/>
+                <rect x="3" y="3" width="14" height="14" fill="#d91b85"/>
+                <rect x="4" y="4" width="12" height="12" fill="#ff3ea5"/>
+                <!-- Pixel Heart Emblem -->
+                <rect x="6" y="6" width="3" height="2" fill="#ffffff"/>
+                <rect x="11" y="6" width="3" height="2" fill="#ffffff"/>
+                <rect x="5" y="8" width="10" height="3" fill="#ffffff"/>
+                <rect x="6" y="11" width="8" height="2" fill="#ffd6f3"/>
+                <rect x="8" y="13" width="4" height="2" fill="#ffd6f3"/>
+                <rect x="9" y="15" width="2" height="1" fill="#ffffff"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="envelope-hint" id="envelopeHint">
+            <span class="blink-cursor">▶</span> TAP OR CLICK ENVELOPE TO OPEN
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- =========================================================
+         STAGE 2: ONLY THE 3D PAPER BOOK (NO TOP RECTANGLE, NO BOTTOM BAR)
+         ========================================================= -->
+    <section class="book-experience hidden" id="bookExperience" aria-label="Interactive Birthday Book">
+
+      <!-- The Physical Desk / Paper Book Landing Zone -->
+      <div class="book-desk" id="bookDesk">
+        <div class="book-drop-shadow" id="bookDropShadow"></div>
+
+        <!-- Book Container -->
+        <div class="book-viewport" id="bookViewport">
+          <!-- Book Binding / Spine -->
+          <div class="book-spine" id="bookSpine"></div>
+
+          <!-- Interactive Hovering Purple & Pink Pixel Butterflies Layer Over the Paper Book -->
+          <div class="butterfly-sanctuary" id="butterflySanctuary"></div>
+
+          <!-- Realistic Paper Curl & Roll Flipbook Container (22 Spacious Pages — Zero Cut Text!) -->
+          <div class="flipbook-root" id="flipbookRoot">
+
+            <!-- PAGE 1: Hard Front Cover (English Text, No 20 / No LVL 20.0) -->
+            <div class="book-page page-cover-front" data-density="soft">
+              <div class="paper-grain"></div>
+              <div class="cover-frame">
+                <div class="retro-window-tag">
+                  <span>HAPPY 20TH BIRTHDAY!</span>
+                </div>
+                <div class="cover-emblem">
+                  <svg viewBox="0 0 64 64" width="74" height="74" shape-rendering="crispEdges">
+                    <rect x="20" y="14" width="4" height="8" fill="#ff3ea5"/>
+                    <rect x="30" y="12" width="4" height="10" fill="#ff3ea5"/>
+                    <rect x="40" y="14" width="4" height="8" fill="#ff3ea5"/>
+                    <rect x="20" y="8" width="4" height="5" fill="#ffee55"/>
+                    <rect x="30" y="6" width="4" height="5" fill="#ffee55"/>
+                    <rect x="40" y="8" width="4" height="5" fill="#ffee55"/>
+                    <rect x="14" y="22" width="36" height="6" fill="#ffffff"/>
+                    <rect x="12" y="24" width="40" height="6" fill="#ffb8f0"/>
+                    <rect x="12" y="30" width="40" height="10" fill="#d58cff"/>
+                    <rect x="18" y="33" width="4" height="4" fill="#ff1e8a"/>
+                    <rect x="30" y="33" width="4" height="4" fill="#ff1e8a"/>
+                    <rect x="42" y="33" width="4" height="4" fill="#ff1e8a"/>
+                    <rect x="8" y="40" width="48" height="5" fill="#fff0fa"/>
+                    <rect x="8" y="45" width="48" height="11" fill="#b45eff"/>
+                    <rect x="4" y="56" width="56" height="4" fill="#4b0082"/>
+                  </svg>
+                </div>
+                <h1 class="cover-title">HAPPY<br/>BIRTHDAY,<br/>DUDAY TISAY!</h1>
+                <div class="cover-subtitle-box bevel-inset">
+                  <p>A BIRTHDAY LETTER FOR YOU</p>
+                  <p class="blink-slow">◀ DRAG CORNER TO ROLL &amp; FOLD OPEN</p>
+                </div>
+                <div class="cover-footer">
+                  <span>FROM: YOUR KUYA RAM</span>
+                </div>
+              </div>
+              <div class="page-curl-affordance right-curl"></div>
+            </div>
+
+            <!-- PAGE 2 (Inside Page 1) -->
+            <div class="book-page page-left-side" data-density="soft">
+              <div class="paper-grain"></div>
+              <div class="page-inner">
+                <div class="page-body-flow">
+                  <p class="letter-text">
+                    Happy Birthday, gwapings nga akong pamangkin! <span class="inline-butterfly-slot" data-color="pink"></span>
+                  </p>
+                  <p class="letter-text">
+                    Dali ra kaayo ang panahon, no? It feels like only yesterday when you were younger, and now, look at you—you've grown into such a beautiful and strong young woman.
+                  </p>
+                </div>
+                <div class="page-number-foot">1</div>
+              </div>
+              <div class="page-curl-affordance left-curl"></div>
+            </div>
+
+            <!-- PAGE 3 (Inside Page 2) -->
+            <div class="book-page page-right-side" data-density="soft">
+              <div class="paper-grain"></div>
+              <div class="page-inner">
+                <div class="page-body-flow">
+                  <p class="letter-text">
+                    Seeing you shine today brings happy tears to my eyes. I am beyond proud of the person you are becoming, and I feel so blessed to have you as my pamangkin. <span class="inline-butterfly-slot" data-color="purple"></span>
+                  </p>
+                  <p class="letter-text">
+                    And honestly, hahahaha, while writing this, nakahilak ko, and I don't even know why. Maybe it's just overwhelming to realize how much you've grown and how grateful I am to have you in my life.
+                  </p>
+                </div>
+                <div class="page-number-foot">2</div>
+              </div>
+              <div class="page-curl-affordance right-curl"></div>
+            </div>
+
+            <!-- PAGE 4 (Inside Page 3) -->
+            <div class="book-page page-left-side" data-density="soft">
+              <div class="paper-grain"></div>
+              <div class="page-inner">
+                <div class="page-body-flow">
+                  <p class="letter-text">
+                    As you grow older, I hope you never lose the beautiful things that make you who you are. Padayon lang sa imong pagka-masinabtanon, pagka-buotan, pagka-madasigon sa pag-alagad sa Ginoo, ug pagka-gwapa, inside and out.
+                  </p>
+                  <p class="letter-text">
+                    Always remember that you deserve all the happiness, love, and beautiful things this world has to offer. <span class="inline-butterfly-slot" data-color="pink"></span>
+                  </p>
+                </div>
+                <div class="page-number-foot">3</div>
+              </div>
+              <div class="page-curl-affordance left-curl"></div>
+            </div>
+
+            <!-- PAGE 5 (Inside Page 4) -->
+            <div class="book-page page-right-side" data-density="soft">
+              <div class="paper-grain"></div>
+              <div class="page-inner">
+                <div class="page-body-flow">
+                  <p class="letter-text">
+                    Ayaw gyud kawad-i og paglaom, Tisay. I know life will not always be easy, and there will be days when things feel heavy, uncertain, and exhausting.
+                  </p>
+                  <p class="letter-text">
+                    But please, take your time. Antos lang sa kung unsay naa karon, one day at a time. <span class="inline-butterfly-slot" data-color="purple"></span>
+                  </p>
+                </div>
+                <div class="page-number-foot">4</div>
+              </div>
+              <div class="page-curl-affordance right-curl"></div>
+            </div>
+
+            <!-- PAGE 6 (Inside Page 5) -->
+            <div class="book-page page-left-side" data-density="soft">
+              <div class="paper-grain"></div>
+              <div class="page-inner">
+                <div class="page-body-flow">
+                  <p class="letter-text">
+                    Never let your present circumstances make you question the beautiful future that is waiting for you. You have so much ahead of you, and I genuinely believe that better days are coming.
+                  </p>
+                  <p class="letter-text">
+                    And now that you're turning 20, I know you're slowly entering a new chapter of your life. <span class="inline-butterfly-slot" data-color="pink"></span>
+                  </p>
+                </div>
+                <div class="page-number-foot">5</div>
+              </div>
+              <div class="page-curl-affordance left-curl"></div>
+            </div>
+
+            <!-- PAGE 7 (Inside Page 6) -->
+            <div class="book-page page-right-side" data-density="soft">
+              <div class="paper-grain"></div>
+              <div class="page-inner">
+                <div class="page-body-flow">
+                  <p class="letter-text">
+                    You're legally an adult now, but please remember that growing older doesn't mean you have to rush into everything that comes with adulthood.
+                  </p>
+                  <p class="letter-text">
+                    Dili tungod kay 20 na ka, kinahanglan na nimo sundon ang tanan nga ginabuhat sa uban. <span class="inline-butterfly-slot" data-color="purple"></span>
+                  </p>
+                </div>
+                <div class="page-number-foot">6</div>
+              </div>
+              <div class="page-curl-affordance right-curl"></div>
+            </div>
+
+            <!-- PAGE 8 (Inside Page 7) -->
+            <div class="book-page page-left-side" data-density="soft">
+              <div class="paper-grain"></div>
+              <div class="page-inner">
+                <div class="page-body-flow">
+                  <p class="letter-text">
+                    Please, ayaw padala sa impluwensya sa uban, especially when it comes to drinking, getting drunk, or doing things just because everyone else is doing them.
+                  </p>
+                  <p class="letter-text">
+                    Learn to enjoy life without compromising your safety, your values, and the person you've worked so hard to become. You don't have to prove anything to anyone. <span class="inline-butterfly-slot" data-color="pink"></span>
+                  </p>
+                </div>
+                <div class="page-number-foot">7</div>
+              </div>
+              <div class="page-curl-affordance left-curl"></div>
+            </div>
+
+            <!-- PAGE 9 (Inside Page 8) -->
+            <div class="book-page page-right-side" data-density="soft">
+              <div class="paper-grain"></div>
+              <div class="page-inner">
+                <div class="page-body-flow">
+                  <p class="letter-text">
+                    And one more thing, Tisay, sometimes when our guardians, parents, or elders remind us, correct us, or stop us from doing certain things, I hope you learn to understand where they're coming from.
+                  </p>
+                  <p class="letter-text">
+                    Dili tanan nga pagbadlong kay pagpugong sa atong kalipay. <span class="inline-butterfly-slot" data-color="purple"></span>
+                  </p>
+                </div>
+                <div class="page-number-foot">8</div>
+              </div>
+              <div class="page-curl-affordance right-curl"></div>
+            </div>
+
+            <!-- PAGE 10 (Inside Page 9) -->
+            <div class="book-page page-left-side" data-density="soft">
+              <div class="paper-grain"></div>
+              <div class="page-inner">
+                <div class="page-body-flow">
+                  <p class="letter-text">
+                    Sometimes, it's their way of protecting us from things we may not yet understand. They have their reasons, and most of the time, those reminders come from love, concern, and the desire to keep us safe. <span class="inline-butterfly-slot" data-color="pink"></span>
+                  </p>
+                </div>
+                <div class="page-number-foot">9</div>
+              </div>
+              <div class="page-curl-affordance left-curl"></div>
+            </div>
+
+            <!-- PAGE 11 (Inside Page 10) -->
+            <div class="book-page page-right-side" data-density="soft">
+              <div class="paper-grain"></div>
+              <div class="page-inner">
+                <div class="page-body-flow">
+                  <p class="letter-text">
+                    Even me, as your kuya, if there are times when I remind you or tell you not to do something, bisan usahay madala ta sa atong mga kabug-at sa dughan, kasuko, o mga problema, please know that it is never because I want to limit your happiness. <span class="inline-butterfly-slot" data-color="purple"></span>
+                  </p>
+                </div>
+                <div class="page-number-foot">10</div>
+              </div>
+              <div class="page-curl-affordance right-curl"></div>
+            </div>
+
+            <!-- PAGE 12 (Inside Page 11) -->
+            <div class="book-page page-left-side" data-density="soft">
+              <div class="paper-grain"></div>
+              <div class="page-inner">
+                <div class="page-body-flow">
+                  <p class="letter-text">
+                    It's because I care about you, and I want to see you grow without having to learn every lesson the hard way.
+                  </p>
+                  <p class="letter-text">
+                    Someday, I hope you'll understand that some of the reminders we give you are simply our way of saying, "We love you, and we don't want anything bad to happen to you." <span class="inline-butterfly-slot" data-color="pink"></span>
+                  </p>
+                </div>
+                <div class="page-number-foot">11</div>
+              </div>
+              <div class="page-curl-affordance left-curl"></div>
+            </div>
+
+            <!-- PAGE 13 (Inside Page 12) -->
+            <div class="book-page page-right-side" data-density="soft">
+              <div class="paper-grain"></div>
+              <div class="page-inner">
+                <div class="page-body-flow">
+                  <p class="letter-text">
+                    Tisay, thank you for being part of some of the most meaningful moments of my life. I will always treasure the fact that you were there beside me during my graduation and baccalaureate.
+                  </p>
+                  <p class="letter-text">
+                    Maybe those moments seemed simple to you, but they meant so much to me. Having you there made those milestones even more special. I hope you know that your presence in my life is something I will never take for granted. <span class="inline-butterfly-slot" data-color="purple"></span>
+                  </p>
+                </div>
+                <div class="page-number-foot">12</div>
+              </div>
+              <div class="page-curl-affordance right-curl"></div>
+            </div>
+
+            <!-- PAGE 14 (Inside Page 13) -->
+            <div class="book-page page-left-side" data-density="soft">
+              <div class="paper-grain"></div>
+              <div class="page-inner">
+                <div class="page-body-flow">
+                  <p class="letter-text">
+                    As your kuya, I want you to know that I will always be here to support you, cheer for you, and believe in you, even on days when you find it difficult to believe in yourself.
+                  </p>
+                  <p class="letter-text">
+                    Please never forget that no matter how old you get, how far you go, or how heavy life becomes, you will always have me in your corner. You don't have to face everything alone. <span class="inline-butterfly-slot" data-color="pink"></span>
+                  </p>
+                </div>
+                <div class="page-number-foot">13</div>
+              </div>
+              <div class="page-curl-affordance left-curl"></div>
+            </div>
+
+            <!-- PAGE 15 (Inside Page 14) -->
+            <div class="book-page page-right-side" data-density="soft">
+              <div class="paper-grain"></div>
+              <div class="page-inner">
+                <div class="page-body-flow">
+                  <p class="letter-text">
+                    Ug palihog, kung naa kay kinahanglan sa akoa, ayaw gyud kaulaw og duol or pagpangayo og tabang. You never have to hesitate or feel like you're bothering me.
+                  </p>
+                  <p class="letter-text">
+                    If there's anything I can do to make things a little easier for you, I will gladly do it. I may not always have the perfect words or all the answers, but I hope my presence will always remind you that you have a kuya who genuinely cares for you. <span class="inline-butterfly-slot" data-color="purple"></span>
+                  </p>
+                </div>
+                <div class="page-number-foot">14</div>
+              </div>
+              <div class="page-curl-affordance right-curl"></div>
+            </div>
+
+            <!-- PAGE 16 (Inside Page 15) -->
+            <div class="book-page page-left-side" data-density="soft">
+              <div class="paper-grain"></div>
+              <div class="page-inner">
+                <div class="page-body-flow">
+                  <p class="letter-text">
+                    And honestly, I don't know why, but there's a different kind of happiness I feel every time I get to see you. Maybe it's because, no matter how much time passes, karon dalaga na kaayu, and I will always find joy in seeing you happy, safe, and doing well. <span class="inline-butterfly-slot" data-color="pink"></span>
+                  </p>
+                </div>
+                <div class="page-number-foot">15</div>
+              </div>
+              <div class="page-curl-affordance left-curl"></div>
+            </div>
+
+            <!-- PAGE 17 (Inside Page 16) -->
+            <div class="book-page page-right-side" data-density="soft">
+              <div class="paper-grain"></div>
+              <div class="page-inner">
+                <div class="page-body-flow">
+                  <p class="letter-text">
+                    One day, life may take us to different places. We may become busier, have our own responsibilities, and spend less time together.
+                  </p>
+                  <p class="letter-text">
+                    But I hope you never outgrow the thought that you can always come to your kuya—not just when life is difficult, but also when you have good news to share, dreams to celebrate, or simply stories you want someone to listen to. <span class="inline-butterfly-slot" data-color="purple"></span>
+                  </p>
+                </div>
+                <div class="page-number-foot">16</div>
+              </div>
+              <div class="page-curl-affordance right-curl"></div>
+            </div>
+
+            <!-- PAGE 18 (Inside Page 17) -->
+            <div class="book-page page-left-side" data-density="soft">
+              <div class="paper-grain"></div>
+              <div class="page-inner">
+                <div class="page-body-flow">
+                  <p class="letter-text">
+                    If there's one thing I wish for you, it is that life becomes kinder to you. I hope you achieve the dreams you quietly pray for, find the happiness you truly deserve, and become the woman you've always dreamed of being.
+                  </p>
+                  <p class="letter-text">
+                    And when that day comes, I hope you will look back and remember that someone has always been proud of you, even long before the world gets to see everything you are capable of. <span class="inline-butterfly-slot" data-color="pink"></span>
+                  </p>
+                </div>
+                <div class="page-number-foot">17</div>
+              </div>
+              <div class="page-curl-affordance left-curl"></div>
+            </div>
+
+            <!-- PAGE 19 (Inside Page 18) -->
+            <div class="book-page page-right-side" data-density="soft">
+              <div class="paper-grain"></div>
+              <div class="page-inner">
+                <div class="page-body-flow">
+                  <p class="letter-text">
+                    And Tisay, if there's one thing I hope you never forget, it's that having you as my pamangkin is one of the blessings I will forever thank God for.
+                  </p>
+                  <p class="letter-text">
+                    I may not always say it, and I may not always show it perfectly, but please know that a part of my heart will always be proud of you. <span class="inline-butterfly-slot" data-color="purple"></span>
+                  </p>
+                </div>
+                <div class="page-number-foot">18</div>
+              </div>
+              <div class="page-curl-affordance right-curl"></div>
+            </div>
+
+            <!-- PAGE 20 (Inside Page 19) -->
+            <div class="book-page page-left-side" data-density="soft">
+              <div class="paper-grain"></div>
+              <div class="page-inner">
+                <div class="page-body-flow">
+                  <p class="letter-text">
+                    I wish I could protect you from every pain this world may bring, but I know I can't. That's why I always include you in my prayers, every single day. I pray that God guides your steps, protects your heart, keeps you away from harm, and grants the dreams you've been quietly praying for.
+                  </p>
+                  <p class="letter-text">
+                    Even in moments when I can't be by your side, I hope you find comfort knowing that somewhere, your kuya is praying for you. <span class="inline-butterfly-slot" data-color="pink"></span>
+                  </p>
+                </div>
+                <div class="page-number-foot">19</div>
+              </div>
+              <div class="page-curl-affordance left-curl"></div>
+            </div>
+
+            <!-- PAGE 21 (Inside Page 20) -->
+            <div class="book-page page-right-side" data-density="soft">
+              <div class="paper-grain"></div>
+              <div class="page-inner">
+                <div class="page-body-flow">
+                  <p class="letter-text">
+                    No matter how old we get, you will always be that pamangkin I will worry about, pray for, and love for the rest of my life.
+                  </p>
+                  <p class="letter-text">
+                    Happy birthday once again, Tisay. Thank you for existing, for being part of my life, and for giving me another reason to be proud and grateful in this life. <span class="inline-butterfly-slot" data-color="purple"></span>
+                  </p>
+                </div>
+                <div class="page-number-foot">20</div>
+              </div>
+              <div class="page-curl-affordance right-curl"></div>
+            </div>
+
+            <!-- PAGE 22 (Inside Page 21) -->
+            <div class="book-page page-left-side" data-density="soft">
+              <div class="paper-grain"></div>
+              <div class="page-inner">
+                <div class="page-body-flow">
+                  <p class="letter-text">
+                    I love you more than words could ever explain. And if there's one thing I want you to carry with you wherever life takes you, it is this: You will never have to earn your place in my life.
+                  </p>
+                  <p class="letter-text">
+                    You are my pamangkin, and I will always be your kuya. Through every season, every struggle, and every chapter of your life, I will always be here. <span class="inline-butterfly-slot" data-color="pink"></span>
+                  </p>
+                </div>
+                <div class="page-number-foot">21</div>
+              </div>
+              <div class="page-curl-affordance left-curl"></div>
+            </div>
+
+            <!-- PAGE 23 (Inside Page 22 — Final Closing & Interactive Wish Button with Plenty of Space) -->
+            <div class="book-page page-right-side" data-density="soft">
+              <div class="paper-grain"></div>
+              <div class="page-inner">
+                <div class="page-body-flow">
+                  <p class="letter-text">
+                    Enjoy your special day, gwapings. You deserve all the love in the world. <span class="inline-butterfly-slot" data-color="purple"></span>
+                  </p>
+
+                  <div class="wish-trigger-box">
+                    <button class="retro-btn confetti-btn" id="celebrateBtn">
+                      <span class="btn-butterfly-icon" data-color="pink"></span>
+                      <span>Happy Birthday, Duday Tisay!</span>
+                    </button>
+                    <p class="wish-response hidden" id="wishResponse">
+                      Happy Birthday, Duday Tisay! — From Kuya Ram
+                    </p>
+                  </div>
+                </div>
+                <div class="page-number-foot">22</div>
+              </div>
+              <div class="page-curl-affordance right-curl"></div>
+            </div>
+
+            <!-- PAGE 24: Back Cover (English Text, No 20 / No LVL 20) -->
+            <div class="book-page page-cover-back" data-density="soft">
+              <div class="paper-grain"></div>
+              <div class="cover-frame back-cover-frame">
+                <div class="retro-window-tag">
+                  <span>DUDAY_TISAY.BOOK</span>
+                </div>
+                <div class="back-cover-body">
+                  <p class="pixel-heading">HAPPY BIRTHDAY,<br/>DUDAY TISAY!</p>
+                  <p class="pixel-sub">FROM YOUR KUYA RAM</p>
+                  <div class="barcode-box">
+                    <div class="barcode-lines"></div>
+                    <span>DUDAY-TISAY-KUYARAM</span>
+                  </div>
+                  <button class="retro-btn" id="restartBookBtn">
+                    <span>↺ READ LETTER AGAIN</span>
+                  </button>
+                </div>
+              </div>
+              <div class="page-curl-affordance left-curl"></div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Confetti Container -->
+  <div id="confettiContainer" class="confetti-container"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
