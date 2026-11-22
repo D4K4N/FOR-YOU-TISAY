@@ -422,15 +422,16 @@ document.addEventListener('DOMContentLoaded', () => {
   //    Option 1 ("single"): Single Page Layout (like images 1 & 2)
   //    Option 2 ("spread"): Whole Book 2-Page Spread Layout (like image 3)
   // ---------------------------------------------------------------------------
-  const flipbookRoot = document.getElementById('flipbookRoot');
-  // Snapshot the original 24 book pages HTML so we can switch between Single Page & Whole Book cleanly
+  const flipbookMount = document.getElementById('flipbookMount');
+  let flipbookRoot = document.getElementById('flipbookRoot');
+  // Snapshot the original 24 book pages HTML so we can recreate a fresh DOM node on mode switch
   const originalPagesMarkup = flipbookRoot.innerHTML;
 
   let pageFlipInstance = null;
   let isDraggingPaper = false;
   let pointerDownPos = null;
-  // Default to Single Page on narrow mobile portrait screens, or Whole Book on wider screens
-  let currentLayoutMode = window.innerWidth <= 680 ? 'single' : 'spread';
+  // Default to "spread" (Whole Book) so even on phone you immediately see the open book + options!
+  let currentLayoutMode = 'spread';
 
   function updateModeButtonsUI() {
     if (currentLayoutMode === 'single') {
@@ -448,18 +449,47 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function updateBookResponsiveScale() {
-    const availW = window.innerWidth - 20;
-    const availH = window.innerHeight - 75;
+    const availW = window.innerWidth - 16;
+    const availH = window.innerHeight - 80;
     const targetW = currentLayoutMode === 'single' ? 370 : 740;
     const targetH = 470;
     const scale = Math.min(1, availW / targetW, availH / targetH);
     bookViewport.style.setProperty('--book-scale', scale.toFixed(3));
   }
 
-  function attachBookInnerButtonListeners() {
-    const restartBtn = flipbookRoot.querySelector('#restartBookBtn');
-    const celebBtn = flipbookRoot.querySelector('#celebrateBtn');
-    const wishResp = flipbookRoot.querySelector('#wishResponse');
+  function bindSwipeOnlyGuard(rootEl) {
+    rootEl.addEventListener('pointerdown', (e) => {
+      if (e.target.closest('button')) return;
+      pointerDownPos = { x: e.clientX, y: e.clientY };
+      isDraggingPaper = false;
+    }, true);
+
+    rootEl.addEventListener('pointermove', (e) => {
+      if (!pointerDownPos) return;
+      const dist = Math.hypot(e.clientX - pointerDownPos.x, e.clientY - pointerDownPos.y);
+      if (dist > 8) {
+        isDraggingPaper = true;
+      }
+    }, true);
+
+    rootEl.addEventListener('pointerup', (e) => {
+      if (e.target.closest('button')) {
+        pointerDownPos = null;
+        return;
+      }
+      if (pointerDownPos && !isDraggingPaper) {
+        e.stopImmediatePropagation();
+        e.stopPropagation();
+      }
+      pointerDownPos = null;
+      isDraggingPaper = false;
+    }, true);
+  }
+
+  function attachBookInnerButtonListeners(rootEl) {
+    const restartBtn = rootEl.querySelector('#restartBookBtn');
+    const celebBtn = rootEl.querySelector('#celebrateBtn');
+    const wishResp = rootEl.querySelector('#wishResponse');
 
     if (restartBtn) {
       restartBtn.addEventListener('click', (e) => {
@@ -481,9 +511,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function attachInlineButterflies() {
+  function attachInlineButterflies(rootEl) {
     inlineButterflyStates.length = 0;
-    const inlineSlots = flipbookRoot.querySelectorAll('.inline-butterfly-slot, .btn-butterfly-icon');
+    const inlineSlots = rootEl.querySelectorAll('.inline-butterfly-slot, .btn-butterfly-icon');
     inlineSlots.forEach((slot, idx) => {
       const variant = slot.dataset.color || (idx % 2 === 0 ? 'pink' : 'purple');
       const uniqueFlapDur = 0.28 + Math.random() * 0.34;
@@ -526,39 +556,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  flipbookRoot.addEventListener('pointerdown', (e) => {
-    if (e.target.closest('button')) return;
-    pointerDownPos = { x: e.clientX, y: e.clientY };
-    isDraggingPaper = false;
-  }, true);
-
-  flipbookRoot.addEventListener('pointermove', (e) => {
-    if (!pointerDownPos) return;
-    const dist = Math.hypot(e.clientX - pointerDownPos.x, e.clientY - pointerDownPos.y);
-    if (dist > 9) {
-      isDraggingPaper = true;
-    }
-  }, true);
-
-  flipbookRoot.addEventListener('pointerup', (e) => {
-    if (e.target.closest('button')) {
-      pointerDownPos = null;
-      return;
-    }
-    if (pointerDownPos && !isDraggingPaper) {
-      e.stopImmediatePropagation();
-      e.stopPropagation();
-    }
-    pointerDownPos = null;
-    isDraggingPaper = false;
-  }, true);
-
   function initOrUpdatePageFlip(preservePageIdx = 0) {
     if (typeof St === 'undefined' || !St.PageFlip) {
       console.error('StPageFlip library not loaded');
       return;
     }
 
+    // Safely dispose previous instance
     if (pageFlipInstance) {
       try {
         pageFlipInstance.destroy();
@@ -566,24 +570,31 @@ document.addEventListener('DOMContentLoaded', () => {
       pageFlipInstance = null;
     }
 
-    // Restore clean HTML pages into flipbookRoot
-    flipbookRoot.innerHTML = originalPagesMarkup;
+    // Create a brand new flipbookRoot element inside flipbookMount
+    // (because StPageFlip.destroy() removes its block element from the DOM)
+    flipbookMount.innerHTML = '';
+    const freshRoot = document.createElement('div');
+    freshRoot.className = 'flipbook-root';
+    freshRoot.id = 'flipbookRoot';
+    freshRoot.innerHTML = originalPagesMarkup;
+    flipbookMount.appendChild(freshRoot);
+    flipbookRoot = freshRoot;
+
     updateModeButtonsUI();
+    bindSwipeOnlyGuard(freshRoot);
 
     const isSingle = currentLayoutMode === 'single';
 
-    pageFlipInstance = new St.PageFlip(flipbookRoot, {
+    pageFlipInstance = new St.PageFlip(freshRoot, {
       width: 370,
       height: 470,
       size: 'fixed',
-      // In "single" mode: force portrait threshold huge so it's ALWAYS 1 page.
-      // In "spread" (Whole Book) mode: disable portrait so it's ALWAYS a 2-page open book spread!
-      minWidth: isSingle ? 2000 : 200,
-      maxWidth: 2500,
-      minHeight: 300,
-      maxHeight: 1500,
+      minWidth: 320,
+      maxWidth: 1000,
+      minHeight: 400,
+      maxHeight: 1000,
       maxShadowOpacity: 0.65,
-      showCover: true,
+      showCover: !isSingle, // In Single Page mode: every page is a single card; in Whole Book mode: 2-page spread with cover
       mobileScrollSupport: false,
       useMouseEvents: true,
       swipeDistance: 25,
@@ -596,9 +607,9 @@ document.addEventListener('DOMContentLoaded', () => {
       drawShadow: true
     });
 
-    pageFlipInstance.loadFromHTML(flipbookRoot.querySelectorAll('.book-page'));
-    attachInlineButterflies();
-    attachBookInnerButtonListeners();
+    pageFlipInstance.loadFromHTML(freshRoot.querySelectorAll('.book-page'));
+    attachInlineButterflies(freshRoot);
+    attachBookInnerButtonListeners(freshRoot);
 
     pageFlipInstance.on('flip', () => {
       playSound('pageFlip');

@@ -729,6 +729,7 @@ html, body {
   display: none;
 }
 
+.book-viewport.single-page-mode .flipbook-mount,
 .book-viewport.single-page-mode .flipbook-root {
   width: 370px;
   height: 470px;
@@ -743,9 +744,18 @@ html, body {
   display: block;
 }
 
+.book-viewport.whole-book-mode .flipbook-mount,
 .book-viewport.whole-book-mode .flipbook-root {
   width: 740px;
   height: 470px;
+}
+
+.flipbook-mount {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Center Book Spine */
