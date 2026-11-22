@@ -706,7 +706,7 @@ html, body {
   pointer-events: none;
 }
 
-/* 3D Book Viewport (supports --book-scale so Whole Book fits even on a vertical phone screen!) */
+/* 3D Book Viewport (supports --book-scale on inner mount so StPageFlip pointer coordinates stay 100% accurate!) */
 .book-viewport {
   position: relative;
   width: 740px;
@@ -715,9 +715,7 @@ html, body {
   align-items: center;
   justify-content: center;
   --book-scale: 1;
-  transform: scale(var(--book-scale, 1));
-  transform-origin: center center;
-  transition: width 0.3s ease, height 0.3s ease, transform 0.3s ease;
+  transition: width 0.3s ease, height 0.3s ease;
 }
 
 .book-viewport.single-page-mode {
@@ -756,6 +754,7 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
+  touch-action: none;
 }
 
 /* Center Book Spine */
