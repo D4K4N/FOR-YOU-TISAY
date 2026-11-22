@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&family=VT323&display=swap" rel="stylesheet">
   <!-- StPageFlip: True Geometric Diagonal Paper Roll, Cylinder Curl & Text Reflection Engine -->
   <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
-  <link rel="stylesheet" href="style.css?v=4" />
+  <link rel="stylesheet" href="style.css?v=5" />
 </head>
 <body>
   <!-- Subtle Scanline & CRT Overlay -->
@@ -158,14 +158,28 @@
          ========================================================= -->
     <section class="book-experience hidden" id="bookExperience" aria-label="Interactive Birthday Book">
 
-      <!-- View Mode Switcher (Option 1: Single Page Layout | Option 2: Whole Book Spread Layout) -->
-      <div class="view-mode-switcher" id="viewModeSwitcher" role="group" aria-label="Book Layout Options">
-        <button class="retro-btn mode-option-btn" id="modeSingleBtn" type="button">
-          <span>SINGLE PAGE</span>
-        </button>
-        <button class="retro-btn mode-option-btn active" id="modeSpreadBtn" type="button">
-          <span>WHOLE BOOK</span>
-        </button>
+      <!-- View Mode & Control Switcher (Layout: Single Page / Whole Book | Turn Mode: Swipe & Click) -->
+      <div class="view-mode-switcher" id="viewModeSwitcher" role="group" aria-label="Book Options">
+        <div class="switcher-group">
+          <button class="retro-btn mode-option-btn" id="modeSingleBtn" type="button">
+            <span>SINGLE PAGE</span>
+          </button>
+          <button class="retro-btn mode-option-btn active" id="modeSpreadBtn" type="button">
+            <span>WHOLE BOOK</span>
+          </button>
+        </div>
+        <div class="switcher-divider"></div>
+        <div class="switcher-group">
+          <button class="retro-btn mode-option-btn active" id="ctrlBothBtn" type="button" title="Swipe left/right OR click/tap page to flip">
+            <span>SWIPE + CLICK</span>
+          </button>
+          <button class="retro-btn mode-option-btn" id="ctrlSwipeBtn" type="button" title="Swipe left/right only">
+            <span>SWIPE ONLY</span>
+          </button>
+          <button class="retro-btn mode-option-btn" id="ctrlClickBtn" type="button" title="Click/Tap page sides to flip">
+            <span>CLICK ONLY</span>
+          </button>
+        </div>
       </div>
 
       <!-- The Physical Desk / Paper Book Landing Zone -->
@@ -185,8 +199,8 @@
           <!-- Realistic Paper Curl & Roll Flipbook Container (22 Spacious Pages — Zero Cut Text!) -->
           <div class="flipbook-root" id="flipbookRoot">
 
-            <!-- PAGE 1: Hard Front Cover (English Text, No 20 / No LVL 20.0) -->
-            <div class="book-page page-cover-front" data-density="soft">
+            <!-- PAGE 1: Hard Front Cover (Rigid Book Cover — Does NOT paper-fold!) -->
+            <div class="book-page page-cover-front" data-density="hard">
               <div class="paper-grain"></div>
               <div class="cover-frame">
                 <div class="retro-window-tag">
@@ -214,13 +228,12 @@
                 <h1 class="cover-title">HAPPY<br/>BIRTHDAY,<br/>DUDAY TISAY!</h1>
                 <div class="cover-subtitle-box bevel-inset">
                   <p>A BIRTHDAY LETTER FOR YOU</p>
-                  <p class="blink-slow">◀ DRAG CORNER TO ROLL &amp; FOLD OPEN</p>
+                  <p class="blink-slow">◀ SWIPE OR TAP TO OPEN BOOK</p>
                 </div>
                 <div class="cover-footer">
                   <span>FROM: YOUR KUYA RAM</span>
                 </div>
               </div>
-              <div class="page-curl-affordance right-curl"></div>
             </div>
 
             <!-- PAGE 2 (Inside Page 1) -->
@@ -595,8 +608,8 @@
               <div class="page-curl-affordance right-curl"></div>
             </div>
 
-            <!-- PAGE 24: Back Cover (English Text, No 20 / No LVL 20) -->
-            <div class="book-page page-cover-back" data-density="soft">
+            <!-- PAGE 24: Hard Back Cover (Rigid Book Cover — Does NOT paper-fold!) -->
+            <div class="book-page page-cover-back" data-density="hard">
               <div class="paper-grain"></div>
               <div class="cover-frame back-cover-frame">
                 <div class="retro-window-tag">
@@ -610,7 +623,6 @@
                   </button>
                 </div>
               </div>
-              <div class="page-curl-affordance left-curl"></div>
             </div>
 
           </div>
@@ -625,6 +637,6 @@
   <!-- Confetti Container -->
   <div id="confettiContainer" class="confetti-container"></div>
 
-  <script src="script.js?v=4"></script>
+  <script src="script.js?v=5"></script>
 </body>
 </html>

@@ -607,17 +607,21 @@ html, body {
   position: relative;
 }
 
-/* View Mode Option Switcher Pill (Top-Center) */
+/* View Mode & Interaction Option Switcher Pill (Top-Center) */
 .view-mode-switcher {
   position: fixed;
-  top: 14px;
+  top: 10px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 80;
   display: inline-flex;
-  gap: 8px;
-  background: rgba(232, 199, 255, 0.9);
-  padding: 5px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  max-width: 96vw;
+  background: rgba(232, 199, 255, 0.92);
+  padding: 5px 8px;
   border-top: 2px solid var(--bevel-light);
   border-left: 2px solid var(--bevel-light);
   border-right: 2px solid var(--bevel-dark);
@@ -625,11 +629,24 @@ html, body {
   box-shadow: 4px 4px 0px rgba(72, 12, 168, 0.25);
 }
 
+.switcher-group {
+  display: inline-flex;
+  gap: 5px;
+}
+
+.switcher-divider {
+  width: 2px;
+  height: 22px;
+  background: var(--bevel-shadow);
+  margin: 0 2px;
+}
+
 .mode-option-btn {
-  padding: 6px 14px;
-  font-size: 11px;
+  padding: 5px 10px;
+  font-size: 10px;
   background: #e9c7ff;
   color: var(--ink-deep);
+  white-space: nowrap;
 }
 
 .mode-option-btn.active {
@@ -647,7 +664,7 @@ html, body {
   align-items: center;
   justify-content: center;
   perspective: 2000px;
-  touch-action: pan-y;
+  touch-action: none;
 }
 
 /* Book Drop / Landing Animation ("Pag-lapag sa book") */

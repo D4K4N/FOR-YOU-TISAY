@@ -13,6 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const bookViewport = document.getElementById('bookViewport');
   const modeSingleBtn = document.getElementById('modeSingleBtn');
   const modeSpreadBtn = document.getElementById('modeSpreadBtn');
+  const ctrlBothBtn = document.getElementById('ctrlBothBtn');
+  const ctrlSwipeBtn = document.getElementById('ctrlSwipeBtn');
+  const ctrlClickBtn = document.getElementById('ctrlClickBtn');
   const bgDecorations = document.getElementById('bgDecorations');
   const confettiContainer = document.getElementById('confettiContainer');
 
@@ -418,21 +421,19 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ---------------------------------------------------------------------------
-  // 4. Realistic Diagonal Paper Curl & Roll Engine + 2 Layout Options:
-  //    Option 1 ("single"): Single Page Layout (like images 1 & 2)
-  //    Option 2 ("spread"): Whole Book 2-Page Spread Layout (like image 3)
+  // 4. Realistic Diagonal Paper Curl & Roll Engine + Layout & Control Options:
+  //    - Hard Book Covers (Front & Back do NOT paper-fold; they open like a rigid cover!)
+  //    - Layout Options: "single" (Single Page) | "spread" (Whole Book)
+  //    - Control Options: "both" (Swipe + Click) | "swipe" (Swipe Only) | "click" (Click Only)
+  //    - Reliable Mobile Touch Swiping from ANY corner, side, or center of the book!
   // ---------------------------------------------------------------------------
   const flipbookMount = document.getElementById('flipbookMount');
   let flipbookRoot = document.getElementById('flipbookRoot');
-  // Snapshot the original 24 book pages HTML so we can recreate a fresh DOM node on mode switch
   const originalPagesMarkup = flipbookRoot.innerHTML;
 
   let pageFlipInstance = null;
-  let isDraggingPaper = false;
-  let pointerDownPos = null;
-  // Default to "spread" (Whole Book) so even on phone you immediately see the open book + options!
   let currentLayoutMode = 'spread';
-
+  let currentControlMode = 'both'; // 'both' | 'swipe' | 'click'
   let currentBookScale = 1;
 
   function updateModeButtonsUI() {
@@ -447,12 +448,17 @@ document.addEventListener('DOMContentLoaded', () => {
       bookViewport.classList.add('whole-book-mode');
       bookViewport.classList.remove('single-page-mode');
     }
+
+    ctrlBothBtn.classList.toggle('active', currentControlMode === 'both');
+    ctrlSwipeBtn.classList.toggle('active', currentControlMode === 'swipe');
+    ctrlClickBtn.classList.toggle('active', currentControlMode === 'click');
+
     updateBookResponsiveScale();
   }
 
   function updateBookResponsiveScale() {
     const availW = window.innerWidth - 16;
-    const availH = window.innerHeight - 80;
+    const availH = window.innerHeight - 92;
     const targetW = currentLayoutMode === 'single' ? 370 : 740;
     const targetH = 470;
     currentBookScale = Math.min(1, availW / targetW, availH / targetH);
@@ -460,195 +466,161 @@ document.addEventListener('DOMContentLoaded', () => {
     bookViewport.style.transform = `scale(${currentBookScale.toFixed(3)})`;
   }
 
-  // ---------------------------------------------------------------------------
-  // Universal Full-Book Swipe & Any-Corner / Center Fold Proxy
-  // - Fixes CSS scale() coordinate mismatch in StPageFlip on mobile
-  // - Lets the user swipe or drag from EVERY side, corner, OR the center of the book!
-  // ---------------------------------------------------------------------------
-  function bindUniversalSwipeAndFold(rootEl) {
-    let gesture = null;
-    let isSyntheticDispatch = false;
+  function flipToNextPage(corner = 'bottom') {
+    if (!pageFlipInstance) return;
+    pageFlipInstance.flipNext(corner);
+  }
 
-    function fireSyntheticMouse(type, clientX, clientY) {
-      isSyntheticDispatch = true;
-      const evt = new MouseEvent(type, {
-        bubbles: true,
-        cancelable: true,
-        view: window,
-        clientX: clientX,
-        clientY: clientY,
-        button: 0,
-        buttons: type === 'mouseup' ? 0 : 1
-      });
-      rootEl.dispatchEvent(evt);
-      isSyntheticDispatch = false;
+  function flipToPrevPage(corner = 'bottom') {
+    if (!pageFlipInstance) return;
+    pageFlipInstance.flipPrev(corner);
+  }
+
+  // Reliable Cross-Device Touch & Mouse Swipe + Click Handler attached once to flipbookMount
+  function initReliableBookTouchAndMouse() {
+    let tracking = null;
+    let lastTurnTimestamp = 0;
+
+    function canTurnNow() {
+      const now = performance.now();
+      if (now - lastTurnTimestamp < 320) return false;
+      lastTurnTimestamp = now;
+      return true;
     }
 
-    // Intercept raw touchstart/touchmove/touchend & mousedown so we control exact unscaled coordinates
-    rootEl.addEventListener(
+    function onStart(clientX, clientY, target) {
+      if (target && target.closest('button')) return;
+      const rect = flipbookMount.getBoundingClientRect();
+      const relX = (clientX - rect.left) / Math.max(1, rect.width);
+      const relY = (clientY - rect.top) / Math.max(1, rect.height);
+
+      tracking = {
+        startX: clientX,
+        startY: clientY,
+        lastX: clientX,
+        lastY: clientY,
+        relX: relX,
+        relY: relY,
+        swiped: false
+      };
+    }
+
+    function onMove(clientX, clientY, e) {
+      if (!tracking) return;
+      tracking.lastX = clientX;
+      tracking.lastY = clientY;
+
+      const dx = clientX - tracking.startX;
+      const dy = clientY - tracking.startY;
+
+      // Prevent browser vertical pull-to-refresh while swiping horizontally on mobile
+      if (Math.abs(dx) > 10 && e && e.cancelable) {
+        e.preventDefault();
+      }
+
+      // Trigger swipe as soon as finger/mouse moves 24px left or right anywhere on the book!
+      if (!tracking.swiped && (currentControlMode === 'both' || currentControlMode === 'swipe')) {
+        if (Math.abs(dx) >= 24 && Math.abs(dx) > Math.abs(dy) * 0.8) {
+          tracking.swiped = true;
+          if (!canTurnNow()) return;
+          const corner = tracking.relY < 0.45 ? 'top' : 'bottom';
+          if (dx < 0) {
+            // Swipe Left -> Next Page
+            flipToNextPage(corner);
+          } else {
+            // Swipe Right -> Previous Page
+            flipToPrevPage(corner);
+          }
+        }
+      }
+    }
+
+    function onEnd() {
+      if (!tracking) return;
+      const dx = tracking.lastX - tracking.startX;
+      const dy = tracking.lastY - tracking.startY;
+      const dist = Math.hypot(dx, dy);
+
+      // If user didn't trigger mid-move swipe, check if release was a quick flick or a tap/click
+      if (!tracking.swiped) {
+        const corner = tracking.relY < 0.45 ? 'top' : 'bottom';
+
+        if (
+          (currentControlMode === 'both' || currentControlMode === 'swipe') &&
+          Math.abs(dx) >= 18 &&
+          Math.abs(dx) > Math.abs(dy) * 0.75
+        ) {
+          // Quick short swipe
+          if (canTurnNow()) {
+            if (dx < 0) {
+              flipToNextPage(corner);
+            } else {
+              flipToPrevPage(corner);
+            }
+          }
+        } else if (
+          (currentControlMode === 'both' || currentControlMode === 'click') &&
+          dist < 14
+        ) {
+          // Click / Tap anywhere on the book!
+          // Right side (or Front Cover) -> Next Page; Left side -> Previous Page
+          if (canTurnNow()) {
+            const curIdx = pageFlipInstance ? pageFlipInstance.getCurrentPageIndex() : 0;
+            if (curIdx === 0 || tracking.relX >= 0.48) {
+              flipToNextPage(corner);
+            } else {
+              flipToPrevPage(corner);
+            }
+          }
+        }
+      }
+
+      tracking = null;
+    }
+
+    // Touch Events (100% reliable on Android & iOS mobile browsers)
+    flipbookMount.addEventListener(
       'touchstart',
       (e) => {
-        if (e.target.closest('button')) return;
-        // Stop StPageFlip's built-in touchstart (which breaks when scaled or started in the center)
-        e.stopImmediatePropagation();
+        if (e.touches.length !== 1) return;
+        const t = e.touches[0];
+        onStart(t.clientX, t.clientY, e.target);
       },
-      true
+      { passive: true }
     );
 
-    rootEl.addEventListener(
+    flipbookMount.addEventListener(
       'touchmove',
       (e) => {
-        if (e.target.closest('button')) return;
-        e.stopImmediatePropagation();
+        if (!tracking || e.touches.length !== 1) return;
+        const t = e.touches[0];
+        onMove(t.clientX, t.clientY, e);
       },
-      true
+      { passive: false }
     );
 
-    rootEl.addEventListener(
-      'touchend',
-      (e) => {
-        if (e.target.closest('button')) return;
-        e.stopImmediatePropagation();
-      },
-      true
-    );
-
-    rootEl.addEventListener(
-      'mousedown',
-      (e) => {
-        if (isSyntheticDispatch || e.target.closest('button')) return;
-        e.stopImmediatePropagation();
-      },
-      true
-    );
-
-    rootEl.addEventListener(
-      'mousemove',
-      (e) => {
-        if (isSyntheticDispatch || e.target.closest('button')) return;
-        e.stopImmediatePropagation();
-      },
-      true
-    );
-
-    rootEl.addEventListener(
-      'mouseup',
-      (e) => {
-        if (isSyntheticDispatch || e.target.closest('button')) return;
-        e.stopImmediatePropagation();
-      },
-      true
-    );
-
-    rootEl.addEventListener('pointerdown', (e) => {
-      if (e.target.closest('button')) return;
-
-      const rect = rootEl.getBoundingClientRect();
-      const relY = Math.max(0.05, Math.min(0.95, (e.clientY - rect.top) / rect.height));
-
-      gesture = {
-        pointerId: e.pointerId,
-        startX: e.clientX,
-        startY: e.clientY,
-        lastX: e.clientX,
-        lastY: e.clientY,
-        relY: relY,
-        startedFold: false,
-        direction: null, // 'next' (swipe left) or 'prev' (swipe right)
-        virtualStartX: 0,
-        virtualStartY: 0,
-        scale: currentBookScale || 1
-      };
-
-      try {
-        rootEl.setPointerCapture(e.pointerId);
-      } catch (_) {}
+    flipbookMount.addEventListener('touchend', () => {
+      onEnd();
     });
 
-    rootEl.addEventListener('pointermove', (e) => {
-      if (!gesture || e.pointerId !== gesture.pointerId) return;
-
-      const dxScreen = e.clientX - gesture.startX;
-      const dyScreen = e.clientY - gesture.startY;
-      gesture.lastX = e.clientX;
-      gesture.lastY = e.clientY;
-
-      if (!gesture.startedFold) {
-        if (Math.hypot(dxScreen, dyScreen) < 7) return;
-
-        // Lock swipe direction: swipe left (dx < 0) = fold next page; swipe right (dx > 0) = fold prev page
-        gesture.direction = dxScreen < 0 ? 'next' : 'prev';
-        gesture.startedFold = true;
-
-        const rect = rootEl.getBoundingClientRect();
-        const unscaledW = currentLayoutMode === 'single' ? 370 : 740;
-        const unscaledH = 470;
-
-        // Pick the outer right edge (for 'next') or outer left edge (for 'prev') in StPageFlip's unscaled space
-        // so whether the user starts dragging at the corner, side, OR center of the book, the page corner immediately curls!
-        const edgeRatioX = gesture.direction === 'next' ? 0.96 : 0.04;
-        // Snap vertical grab near top or bottom corner depending on where the finger/cursor is
-        const cornerRatioY = gesture.relY < 0.45 ? 0.08 : 0.92;
-
-        gesture.virtualStartX = rect.left + unscaledW * edgeRatioX;
-        gesture.virtualStartY = rect.top + unscaledH * cornerRatioY;
-
-        fireSyntheticMouse('mousedown', gesture.virtualStartX, gesture.virtualStartY);
-      }
-
-      if (gesture.startedFold) {
-        // Convert screen drag distance into unscaled book space so the paper curl tracks finger 1:1 across the whole book
-        const unscaledDx = (dxScreen / gesture.scale) * 1.15;
-        const unscaledDy = (dyScreen / gesture.scale) * 0.65;
-
-        fireSyntheticMouse(
-          'mousemove',
-          gesture.virtualStartX + unscaledDx,
-          gesture.virtualStartY + unscaledDy
-        );
-      }
+    // Mouse / Pointer Events for Desktop Windows
+    flipbookMount.addEventListener('mousedown', (e) => {
+      if (e.button !== 0) return;
+      onStart(e.clientX, e.clientY, e.target);
     });
 
-    function finishGesture(e) {
-      if (!gesture || (e && e.pointerId !== gesture.pointerId)) return;
+    window.addEventListener('mousemove', (e) => {
+      if (!tracking) return;
+      onMove(e.clientX, e.clientY, e);
+    });
 
-      try {
-        rootEl.releasePointerCapture(gesture.pointerId);
-      } catch (_) {}
-
-      if (gesture.startedFold) {
-        const dxScreen = gesture.lastX - gesture.startX;
-        const dyScreen = gesture.lastY - gesture.startY;
-        const unscaledDx = (dxScreen / gesture.scale) * 1.15;
-        const unscaledDy = (dyScreen / gesture.scale) * 0.65;
-
-        // If user did a quick flick/swipe of at least 28px on screen, ensure the page completes the turn!
-        const minCompleteDist = currentLayoutMode === 'single' ? 210 : 420;
-        let finalDx = unscaledDx;
-        if (gesture.direction === 'next' && dxScreen < -26) {
-          finalDx = Math.min(unscaledDx, -minCompleteDist);
-        } else if (gesture.direction === 'prev' && dxScreen > 26) {
-          finalDx = Math.max(unscaledDx, minCompleteDist);
-        }
-
-        fireSyntheticMouse(
-          'mousemove',
-          gesture.virtualStartX + finalDx,
-          gesture.virtualStartY + unscaledDy
-        );
-        fireSyntheticMouse(
-          'mouseup',
-          gesture.virtualStartX + finalDx,
-          gesture.virtualStartY + unscaledDy
-        );
-      }
-
-      gesture = null;
-    }
-
-    rootEl.addEventListener('pointerup', finishGesture);
-    rootEl.addEventListener('pointercancel', finishGesture);
+    window.addEventListener('mouseup', () => {
+      if (!tracking) return;
+      onEnd();
+    });
   }
+
+  initReliableBookTouchAndMouse();
 
   function attachBookInnerButtonListeners(rootEl) {
     const restartBtn = rootEl.querySelector('#restartBookBtn');
@@ -745,7 +717,6 @@ document.addEventListener('DOMContentLoaded', () => {
     flipbookRoot = freshRoot;
 
     updateModeButtonsUI();
-    bindUniversalSwipeAndFold(freshRoot);
 
     const isSingle = currentLayoutMode === 'single';
 
@@ -758,12 +729,13 @@ document.addEventListener('DOMContentLoaded', () => {
       minHeight: 400,
       maxHeight: 1000,
       maxShadowOpacity: 0.65,
-      showCover: !isSingle, // In Single Page mode: every page is a single card; in Whole Book mode: 2-page spread with cover
+      showCover: !isSingle,
       mobileScrollSupport: false,
-      useMouseEvents: true,
+      // Disable StPageFlip's buggy scaled mouse/touch listeners; our universal handler drives flipNext/flipPrev cleanly!
+      useMouseEvents: false,
       swipeDistance: 25,
       clickEventForward: true,
-      flippingTime: 780,
+      flippingTime: 720,
       usePortrait: isSingle,
       startPage: preservePageIdx,
       startZIndex: 10,
@@ -794,6 +766,24 @@ document.addEventListener('DOMContentLoaded', () => {
     currentLayoutMode = 'spread';
     playSound('pageFlip');
     initOrUpdatePageFlip(curPage);
+  });
+
+  ctrlBothBtn.addEventListener('click', () => {
+    currentControlMode = 'both';
+    playSound('pageFlip');
+    updateModeButtonsUI();
+  });
+
+  ctrlSwipeBtn.addEventListener('click', () => {
+    currentControlMode = 'swipe';
+    playSound('pageFlip');
+    updateModeButtonsUI();
+  });
+
+  ctrlClickBtn.addEventListener('click', () => {
+    currentControlMode = 'click';
+    playSound('pageFlip');
+    updateModeButtonsUI();
   });
 
   // Keyboard navigation (Left/Right arrows for Windows users)
